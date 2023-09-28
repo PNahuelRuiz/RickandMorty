@@ -1,34 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Cards from './components/cards/Cards';
+import Nav from './components/nav/Nav';
+import { useState } from 'react';
+import axios from 'axios';
 
-function App() {
-  const [count, setCount] = useState(0)
+
+
+const App = () => {
+  const [characters, setCharacters] = useState([]);
+
+  const onSearch = (id) => {
+    axios(`https://rickandmortyapi.com/api/character/${id}`)
+    .then(({ data }) => {
+      if (data.name) {
+         setCharacters((oldChars) => [...oldChars, data]);
+      } 
+
+   })
+    .catch(() => {
+      alert('¡No hay personajes con este ID!');
+    })
+    
+   setCharacters([...characters, example])
+  }
+
+  const onClose = (id) => {
+      const characterFiltered = characters.filter((character) => {
+        return character.id !== id
+      })
+
+      setCharacters(characterFiltered);
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className='App'>
+        <Nav onSearch={onSearch}/>
+         <Cards characters={characters} onClose={onClose} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
   )
 }
 
